@@ -1,9 +1,28 @@
 import { prisma } from "@/lib/prisma";
 
 export default async function AdminPage() {
-  const patients = await prisma.patient.findMany();
+  const patients = await prisma.patient.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      appointments: true,
+      prescriptions: true,
+    },
+  });
 
-  console.log(patients);
+  return (
+    <div>
+      <h1>Admin Page</h1>
 
-  return <div>Admin page</div>;
+      {patients.map((patient) => (
+        <div key={patient.id}>
+          <p>{patient.name}</p>
+          <p>{patient.email}</p>
+          <p>Appointments: {patient.appointments.length}</p>
+          <p>Prescriptions: {patient.prescriptions.length}</p>
+        </div>
+      ))}
+    </div>
+  );
 }
