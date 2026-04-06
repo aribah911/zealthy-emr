@@ -11,6 +11,8 @@ pnpm dev
 
 Open http://localhost:3000
 
+Deployed on: zealthy-emr-bice.vercel.app 
+
 ## Notes
 
 * Uses SQLite (no setup needed)
