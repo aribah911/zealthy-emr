@@ -12,8 +12,15 @@ export default async function AdminPage() {
 
   return (
     <div className="p-6 text-white bg-black min-h-screen">
-      <h1 className="mb-4 text-xl font-semibold">Admin Page</h1>
-
+      <div  className="mb-6 flex items-start justify-between">
+        <h1 className="mb-4 text-xl font-semibold">Admin Page</h1>
+        <Link
+            href={`/admin/patients/add`}
+            className="border px-3 py-1 text-sm"
+        >
+            Add Patient
+        </Link>
+      </div>
       <table className="w-full border border-gray-700">
         <thead className="bg-gray-800">
           <tr>
