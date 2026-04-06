@@ -90,6 +90,7 @@ export async function createAppointment(formData: FormData) {
     },
   });
 
+  revalidatePath("/admin");
   revalidatePath(`/admin/patients?id=${patientId}`);
   redirect(`/admin/patients?id=${patientId}`);
 }
@@ -116,6 +117,7 @@ export async function updateAppointment(formData: FormData) {
     },
   });
 
+  revalidatePath("/admin");
   revalidatePath(`/admin/patients?id=${patientId}`);
   redirect(`/admin/patients?id=${patientId}`);
 }
@@ -132,6 +134,7 @@ export async function deleteAppointment(formData: FormData) {
     where: { id },
   });
 
+  revalidatePath("/admin");
   revalidatePath(`/admin/patients?id=${patientId}`);
   redirect(`/admin/patients?id=${patientId}`);
 }
@@ -179,6 +182,7 @@ export async function createPrescription(formData: FormData) {
     },
   });
 
+  revalidatePath("/admin");
   revalidatePath(`/admin/patients?id=${patientId}`);
   redirect(`/admin/patients?id=${patientId}`);
 }
@@ -220,6 +224,7 @@ export async function updatePrescription(formData: FormData) {
     },
   });
 
+  revalidatePath("/admin");
   revalidatePath(`/admin/patients?id=${patientId}`);
   redirect(`/admin/patients?id=${patientId}`);
 }
@@ -236,6 +241,7 @@ export async function deletePrescription(formData: FormData) {
     where: { id },
   });
 
+  revalidatePath("/admin");
   revalidatePath(`/admin/patients?id=${patientId}`);
   redirect(`/admin/patients?id=${patientId}`);
 }
