@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { updateAppointment } from "@/app/admin/actions";
+import Link from "next/link";
 
 type Props = {
   searchParams: Promise<{
@@ -100,9 +101,18 @@ export default async function EditAppointmentPage({ searchParams }: Props) {
           />
         </div>
 
-        <button type="submit" className="border px-4 py-2">
-          Save Appointment
-        </button>
+        <div className="mb-6 flex items-center gap-2">
+          <button type="submit" className="border px-4 py-2">
+            Save Appointment
+          </button>
+
+          <Link
+            href={`/admin/patients?id=${patientId}`}
+            className="border px-4 py-2"
+          >
+            Cancel
+          </Link>
+        </div>
       </form>
     </div>
   );

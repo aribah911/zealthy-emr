@@ -1,4 +1,5 @@
 import { createPatient } from "@/app/admin/actions";
+import Link from "next/link";
 
 export default function AddPatientPage() {
   return (
@@ -31,9 +32,18 @@ export default function AddPatientPage() {
           />
         </div>
 
-        <button type="submit" className="border px-4 py-2">
-          Add Patient
-        </button>
+        <div className="mb-6 flex items-center gap-2">
+          <button type="submit" className="border px-4 py-2">
+            Save Patient
+          </button>
+
+          <Link
+            href={`/admin`}
+            className="border px-4 py-2"
+          >
+            Cancel
+          </Link>
+        </div>
       </form>
     </div>
   );
