@@ -83,7 +83,7 @@ export default async function PatientPage({ searchParams }: Props) {
 
           <tbody>
             {upcomingAppointments.length > 0 ? (
-              upcomingAppointments.map((appointment) => (
+              upcomingAppointments.map((appointment: (typeof upcomingAppointments)[number]) => (
                 <tr
                   key={appointment.id}
                   className="border-t border-gray-700 hover:bg-yellow-200/20"
@@ -160,7 +160,7 @@ export default async function PatientPage({ searchParams }: Props) {
 
           <tbody>
             {patient.prescriptions.length > 0 ? (
-              patient.prescriptions.map((prescription) => (
+              patient.prescriptions.map((prescription: (typeof patient.prescriptions)[number]) => (
                 <tr
                   key={prescription.id}
                   className="border-t border-gray-700 hover:bg-yellow-200/20"

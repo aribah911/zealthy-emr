@@ -36,7 +36,7 @@ export default async function AddPrescriptionPage({ searchParams }: Props) {
           <label className="mb-1 block">Medication Name</label>
           <select name="medicationName" className="w-full border p-2" required>
             <option value="">Select</option>
-            {medicationOptions.map((m) => (
+            {medicationOptions.map((m: (typeof medicationOptions)[number]) => (
               <option key={m.id} value={m.value}>
                 {m.value}
               </option>
@@ -48,7 +48,7 @@ export default async function AddPrescriptionPage({ searchParams }: Props) {
           <label className="mb-1 block">Dosage</label>
           <select name="dosage" className="w-full border p-2" required>
             <option value="">Select</option>
-            {dosageOptions.map((d) => (
+            {dosageOptions.map((d: (typeof dosageOptions)[number]) => (
               <option key={d.id} value={d.value}>
                 {d.value}
               </option>

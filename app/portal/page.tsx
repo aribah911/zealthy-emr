@@ -69,7 +69,7 @@ export default async function PortalPage() {
 
           <tbody>
             {upcomingAppointments.length > 0 ? (
-              upcomingAppointments.map((appointment, index) => (
+              upcomingAppointments.map((appointment: (typeof upcomingAppointments)[number], index: number) => (
                 <tr
                   key={`${appointment.id}-${appointment.date.toISOString()}-${index}`}
                   className="border-t border-gray-700 hover:bg-yellow-200/20"
@@ -122,7 +122,7 @@ export default async function PortalPage() {
 
           <tbody>
             {upcomingRefills.length > 0 ? (
-              upcomingRefills.map((refill, index) => (
+              upcomingRefills.map((refill: (typeof upcomingRefills)[number], index: number) => (
                 <tr
                   key={`${refill.id}-${refill.date.toISOString()}-${index}`}
                   className="border-t border-gray-700 hover:bg-yellow-200/20"

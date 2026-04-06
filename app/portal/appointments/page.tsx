@@ -34,7 +34,7 @@ export default async function AppointmentsPage() {
 
         <tbody>
           {appointments.length > 0 ? (
-            appointments.map((appointment, index) => (
+            appointments.map((appointment: (typeof appointments)[number], index: number) => (
               <tr
                 key={`${appointment.id}-${appointment.date.toISOString()}-${index}`}
                 className="border-t border-gray-700 hover:bg-yellow-200/20"

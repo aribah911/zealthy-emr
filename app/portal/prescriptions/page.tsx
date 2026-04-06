@@ -35,7 +35,7 @@ export default async function PrescriptionsPage() {
 
         <tbody>
           {prescriptions.length > 0 ? (
-            prescriptions.map((prescription, index) => (
+            prescriptions.map((prescription: (typeof prescriptions)[number], index: number) => (
               <tr
                 key={`${prescription.id}-${prescription.date.toISOString()}-${index}`}
                 className="border-t border-gray-700 hover:bg-yellow-200/20"

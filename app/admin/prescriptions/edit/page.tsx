@@ -60,7 +60,7 @@ export default async function EditPrescriptionPage({ searchParams }: Props) {
             required
           >
             <option value="">Select</option>
-            {medicationOptions.map((m) => (
+            {medicationOptions.map((m: (typeof medicationOptions)[number]) => (
               <option key={m.id} value={m.value}>
                 {m.value}
               </option>
@@ -77,7 +77,7 @@ export default async function EditPrescriptionPage({ searchParams }: Props) {
             required
           >
             <option value="">Select</option>
-            {dosageOptions.map((d) => (
+            {dosageOptions.map((d: (typeof dosageOptions)[number]) => (
               <option key={d.id} value={d.value}>
                 {d.value}
               </option>
