@@ -3,6 +3,63 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import bcrypt from "bcrypt";
+
+export async function createPatient(formData: FormData) {
+  const name = String(formData.get("name") ?? "");
+  const email = String(formData.get("email") ?? "");
+  const password = String(formData.get("password") ?? "");
+
+  if (!name || !email || !password) {
+    throw new Error("Invalid patient data");
+  }
+
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  await prisma.patient.create({
+    data: {
+      name,
+      email,
+      passwordHash,
+    },
+  });
+
+  revalidatePath("/admin");
+  redirect("/admin");
+}
+
+export async function updatePatient(formData: FormData) {
+  const id = Number(formData.get("id"));
+  const name = String(formData.get("name") ?? "");
+  const email = String(formData.get("email") ?? "");
+  const password = String(formData.get("password") ?? "");
+
+  if (Number.isNaN(id) || !name || !email) {
+    throw new Error("Invalid patient data");
+  }
+
+  const data: {
+    name: string;
+    email: string;
+    passwordHash?: string;
+  } = {
+    name,
+    email,
+  };
+
+  if (password) {
+    data.passwordHash = await bcrypt.hash(password, 10);
+  }
+
+  await prisma.patient.update({
+    where: { id },
+    data,
+  });
+
+  revalidatePath("/admin");
+  revalidatePath(`/admin/patients?id=${id}`);
+  redirect(`/admin/patients?id=${id}`);
+}
 
 export async function createAppointment(formData: FormData) {
   const patientId = Number(formData.get("patientId"));

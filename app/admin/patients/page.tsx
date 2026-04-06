@@ -42,6 +42,14 @@ export default async function PatientPage({ searchParams }: Props) {
           <p className="mb-1">{patient.email}</p>
           <p>Created: {new Date(patient.createdAt).toLocaleDateString()}</p>
         </div>
+
+        <Link
+          href={`/admin/patients/edit?id=${patient.id}`}
+          className="border px-3 py-1 text-sm"
+        >
+          Edit Patient
+        </Link>
+
       </div>
 
       <div className="mb-8">
