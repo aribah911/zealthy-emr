@@ -1,11 +1,11 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcrypt";
 import data from "./data.json";
 
-const adapter = new PrismaBetterSqlite3({
-  url: process.env.DATABASE_URL!,
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
 });
 
 const prisma = new PrismaClient({ adapter });
@@ -13,13 +13,11 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("Seeding database process started.");
 
-  // Clear existing data
   await prisma.appointment.deleteMany();
   await prisma.prescription.deleteMany();
   await prisma.patient.deleteMany();
   await prisma.medicationOption.deleteMany();
 
-  // Insert medication options with dosage
   for (const med of data.medications) {
     await prisma.medicationOption.create({
       data: {
@@ -28,7 +26,7 @@ async function main() {
       },
     });
   }
-  // Insert dosages into medication options
+
   for (const dose of data.dosages) {
     await prisma.medicationOption.create({
       data: {
@@ -38,7 +36,6 @@ async function main() {
     });
   }
 
-  // Insert patients data
   for (const user of data.users) {
     const passwordHash = await bcrypt.hash(user.password, 10);
 
@@ -50,7 +47,6 @@ async function main() {
       },
     });
 
-    // Insert appointments
     for (const appt of user.appointments) {
       await prisma.appointment.create({
         data: {
@@ -62,7 +58,6 @@ async function main() {
       });
     }
 
-    // Insert prescriptions
     for (const rx of user.prescriptions) {
       await prisma.prescription.create({
         data: {
