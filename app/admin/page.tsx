@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { Patient, Appointment, Prescription } from "@prisma/client";
+
+type PatientWithRelations = Patient & {
+  appointments: Appointment[];
+  prescriptions: Prescription[];
+};
 
 export default async function AdminPage() {
   const patients = await prisma.patient.findMany({
@@ -34,7 +40,7 @@ export default async function AdminPage() {
         </thead>
 
         <tbody>
-          {patients.map((patient) => (
+          {patients.map((patient : PatientWithRelations) => (
             <tr
               key={patient.id}
               className="border-t border-gray-700 hover:bg-yellow-200/20"
