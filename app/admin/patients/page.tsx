@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getUpcomingAppointments } from "@/lib/appointments";
 
 type Props = {
   searchParams: Promise<{
@@ -9,7 +10,6 @@ type Props = {
 
 export default async function PatientPage({ searchParams }: Props) {
   const { id } = await searchParams;
-
   const patientId = Number(id);
 
   if (!id || Number.isNaN(patientId)) {
@@ -17,18 +17,12 @@ export default async function PatientPage({ searchParams }: Props) {
   }
 
   const patient = await prisma.patient.findUnique({
-    where: { id: patientId },
+    where: {
+      id: patientId,
+    },
     include: {
-      appointments: {
-        orderBy: {
-          startDatetime: "asc",
-        },
-      },
-      prescriptions: {
-        orderBy: {
-          refillOn: "asc",
-        },
-      },
+      appointments: true,
+      prescriptions: true,
     },
   });
 
@@ -36,21 +30,17 @@ export default async function PatientPage({ searchParams }: Props) {
     notFound();
   }
 
-  const now = new Date();
-
-  const upcomingAppointments = patient.appointments.filter(
-    (appointment) => new Date(appointment.startDatetime) >= now
-  );
+  const upcomingAppointments = getUpcomingAppointments(patient.appointments);
 
   return (
-    <div className="min-h-screen bg-black p-6 text-white space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">{patient.name}</h1>
-        <p>{patient.email}</p>
-        <p>Created: {new Date(patient.createdAt).toLocaleDateString()}</p>
-      </div>
+    <div className="min-h-screen bg-black p-6 text-white">
+      <h1 className="mb-2 text-2xl font-semibold">{patient.name}</h1>
+      <p className="mb-1">{patient.email}</p>
+      <p className="mb-6">
+        Created: {new Date(patient.createdAt).toLocaleDateString()}
+      </p>
 
-      <div>
+      <div className="mb-8">
         <h2 className="mb-2 text-lg font-semibold">Upcoming Appointments</h2>
 
         <table className="w-full border border-gray-700">
@@ -59,7 +49,7 @@ export default async function PatientPage({ searchParams }: Props) {
               <th className="p-2 text-left">Provider</th>
               <th className="p-2 text-left">Date</th>
               <th className="p-2 text-left">Repeat</th>
-              <th className="p-2 text-left">End</th>
+              <th className="p-2 text-left">End Date</th>
             </tr>
           </thead>
 
@@ -72,7 +62,7 @@ export default async function PatientPage({ searchParams }: Props) {
                 >
                   <td className="p-2">{appointment.providerName}</td>
                   <td className="p-2">
-                    {new Date(appointment.startDatetime).toLocaleString()}
+                    {appointment.date.toLocaleString()}
                   </td>
                   <td className="p-2">
                     {appointment.repeatSchedule || "None"}
