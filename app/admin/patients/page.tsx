@@ -1,0 +1,142 @@
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+
+type Props = {
+  searchParams: Promise<{
+    id?: string;
+  }>;
+};
+
+export default async function PatientPage({ searchParams }: Props) {
+  const { id } = await searchParams;
+
+  const patientId = Number(id);
+
+  if (!id || Number.isNaN(patientId)) {
+    notFound();
+  }
+
+  const patient = await prisma.patient.findUnique({
+    where: { id: patientId },
+    include: {
+      appointments: {
+        orderBy: {
+          startDatetime: "asc",
+        },
+      },
+      prescriptions: {
+        orderBy: {
+          refillOn: "asc",
+        },
+      },
+    },
+  });
+
+  if (!patient) {
+    notFound();
+  }
+
+  const now = new Date();
+
+  const upcomingAppointments = patient.appointments.filter(
+    (appointment) => new Date(appointment.startDatetime) >= now
+  );
+
+  return (
+    <div className="min-h-screen bg-black p-6 text-white space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold">{patient.name}</h1>
+        <p>{patient.email}</p>
+        <p>Created: {new Date(patient.createdAt).toLocaleDateString()}</p>
+      </div>
+
+      <div>
+        <h2 className="mb-2 text-lg font-semibold">Upcoming Appointments</h2>
+
+        <table className="w-full border border-gray-700">
+          <thead className="bg-gray-800">
+            <tr>
+              <th className="p-2 text-left">Provider</th>
+              <th className="p-2 text-left">Date</th>
+              <th className="p-2 text-left">Repeat</th>
+              <th className="p-2 text-left">End</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {upcomingAppointments.length > 0 ? (
+              upcomingAppointments.map((appointment) => (
+                <tr
+                  key={appointment.id}
+                  className="border-t border-gray-700 hover:bg-yellow-200/20"
+                >
+                  <td className="p-2">{appointment.providerName}</td>
+                  <td className="p-2">
+                    {new Date(appointment.startDatetime).toLocaleString()}
+                  </td>
+                  <td className="p-2">
+                    {appointment.repeatSchedule || "None"}
+                  </td>
+                  <td className="p-2">
+                    {appointment.repeatEndDate
+                      ? new Date(appointment.repeatEndDate).toLocaleDateString()
+                      : "None"}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="p-2 text-gray-400">
+                  No upcoming appointments
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <h2 className="mb-2 text-lg font-semibold">Prescriptions</h2>
+
+        <table className="w-full border border-gray-700">
+          <thead className="bg-gray-800">
+            <tr>
+              <th className="p-2 text-left">Medication</th>
+              <th className="p-2 text-left">Dosage</th>
+              <th className="p-2 text-left">Quantity</th>
+              <th className="p-2 text-left">Refill On</th>
+              <th className="p-2 text-left">Refill Schedule</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {patient.prescriptions.length > 0 ? (
+              patient.prescriptions.map((prescription) => (
+                <tr
+                  key={prescription.id}
+                  className="border-t border-gray-700 hover:bg-yellow-200/20"
+                >
+                  <td className="p-2">{prescription.medicationName}</td>
+                  <td className="p-2">{prescription.dosage}</td>
+                  <td className="p-2">{prescription.quantity}</td>
+                  <td className="p-2">
+                    {new Date(prescription.refillOn).toLocaleDateString()}
+                  </td>
+                  <td className="p-2">
+                    {prescription.refillSchedule || "None"}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="p-2 text-gray-400">
+                  No prescriptions
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
